@@ -28,27 +28,27 @@ The analysis followed a structured data engineering lifecycle:
 
 ### 1. Data Ingestion & Exploration
 * Loaded all six tables from the `bakehouse` schema into PySpark DataFrames.
-* [cite_start]Conducted initial data exploration by checking schemas (`.printSchema()`) [cite: 551] and row counts (`.count()`).
-* [cite_start]Inspected sample data using `.show()` [cite: 545] to understand data types and potential quality issues.
+* Conducted initial data exploration by checking schemas (`.printSchema()`) and row counts (`.count()`).
+* Inspected sample data using `.show()`  to understand data types and potential quality issues.
 
 ### 2. Data Cleaning & Preparation
-* [cite_start]Handled missing values in critical columns using `.na.drop()` [cite: 7, 56, 671] (e.g., for transaction IDs) [cite_start]and `.na.fill()` [cite: 12, 14, 60] (e.g., for categorical data).
-* [cite_start]Performed type casting on key columns, such as converting sales figures from `string` to `double` and date strings to `timestamp` format using `.withColumn()` [cite: 18, 63] and `.cast()`.
+* Handled missing values in critical columns using `.na.drop()` (e.g., for transaction IDs) and `.na.fill()` (e.g., for categorical data).
+* Performed type casting on key columns, such as converting sales figures from `string` to `double` and date strings to `timestamp` format using `.withColumn()`  and `.cast()`.
 
 ### 3. Data Enrichment (Joins & Unions)
-* [cite_start]Created a single, enriched "master analysis table" by joining the main `sales_transactions` fact table with the `sales_customers` and `sales_franchises` dimension tables[cite: 83, 86].
-* [cite_start]Applied **broadcast join optimization** (`broadcast()`) [cite: 345] on the smaller dimension tables to improve query performance.
-* [cite_start]Combined the two distinct customer review tables (`media_customer_reviews` and `media_gold_reviews_chunked`) into a single DataFrame using `.union()`[cite: 94, 96, 97].
+* Created a single, enriched "master analysis table" by joining the main `sales_transactions` fact table with the `sales_customers` and `sales_franchises` dimension tables.
+* Applied **broadcast join optimization** (`broadcast()`)  on the smaller dimension tables to improve query performance.
+* Combined the two distinct customer review tables (`media_customer_reviews` and `media_gold_reviews_chunked`) into a single DataFrame using `.union()`.
 
 ### 4. Analysis (DataFrame API vs. Spark SQL)
 Performed analysis using both of PySpark's primary APIs:
 
-* [cite_start]**DataFrame API:** Used programmatic methods like `.groupBy()` [cite: 32, 565, 573][cite_start], `.agg()` [cite: 32, 565, 573][cite_start], and `.filter()` [cite: 30, 573, 661] to calculate key metrics.
-* [cite_start]**Spark SQL:** Registered the DataFrames as temporary views (`.createOrReplaceTempView()`) [cite: 257, 266, 295] [cite_start]and used `spark.sql()` [cite: 259, 271, 285] to run complex, multi-step aggregations and queries.
+* **DataFrame API:** Used programmatic methods like `.groupBy()`, `.agg()` , and `.filter()`  to calculate key metrics.
+* **Spark SQL:** Registered the DataFrames as temporary views (`.createOrReplaceTempView()`) and used `spark.sql()`  to run complex, multi-step aggregations and queries.
 
 ### 5. Optimization 
-* [cite_start]**Caching:** Persisted the master analysis table in memory using `.cache()` [cite: 364] to speed up iterative queries during the analysis phase.
-* [cite_start]**Query Planning:** Used `.explain()` [cite: 352, 353] to inspect the physical query plan and confirm that optimizations (like broadcast joins) were being correctly applied.
+* **Caching:** Persisted the master analysis table in memory using `.cache()` to speed up iterative queries during the analysis phase.
+* **Query Planning:** Used `.explain()`  to inspect the physical query plan and confirm that optimizations (like broadcast joins) were being correctly applied.
 
 
 ## 🚀 How to Run
